@@ -45,6 +45,13 @@ const reset = function (this: GlobalEventHandlers): void {
     // Функция  должна установить в начальное состояние переменные
     //  board, turn и gameOver, и установить в начальное состояние 
     //  свойство textContent html элементов buttons и info
+    board = zeroBoard.slice();
+    turn = "X";
+    gameOver = false;
+    for (let i = 0; i < 9; i++) {
+        buttons[i].textContent = '_';
+    }
+    info.textContent = '';
 }
 resetButton.onclick = reset
 
@@ -55,4 +62,23 @@ function step(cell: number): void {
     // При выполнении хода нужно заполнить соответствующие элементы 
     //  массивов board и buttons, затем проверить, на закончилась ли игра 
     //  и, если игра закончилась, обновить переменные gameOver и info.
+    if (gameOver) return;
+    if (!isRightMove(cell, board)) return;
+
+    const symbol = getTurn();
+    board[cell] = symbol;
+    buttons[cell].textContent = symbol;
+
+    const winner = checkWin(board);
+    if (winner !== '_'){
+        gameOver = true;
+        info.textContent = `Победил: ${winner}`;
+        return;
+    }
+
+    if (isFill(board)) {
+        gameOver = true;
+        info.textContent = "Ничья!";
+        return;
+    }
 }
